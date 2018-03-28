@@ -11,10 +11,6 @@ import (
 
 // UserController is our /user controller.
 // UserController is responsible to handle the following requests:
-// GET  			/user/register
-// POST 			/user/register
-// GET 				/user/login
-// POST 			/user/login
 // GET 				/user/profile
 // All HTTP Methods /user/logout
 type UserController struct {
@@ -35,27 +31,10 @@ type UserController struct {
 
 const userIDKey = "UserID"
 
-var loginStaticView = mvc.View{
-	Name: "user/login.html",
-	Data: iris.Map{"Title": "User Login"},
-}
-
-// GetLogin handles GET: http://localhost:8080/user/login.
-func (c *UserController) GetLogin() mvc.Result {
-
-	return loginStaticView
-}
-
-// PostLogin handles POST: http://localhost:8080/user/register.
-func (c *UserController) PostLogin() mvc.Result {
-	var (
-		username = c.Ctx.FormValue("UserName")
-		password = c.Ctx.FormValue("Password")
-	)
-
-	return mvc.Response{
-		Path: "/user/profile?username=" + username + "&password=" + password,
-	}
+//Get Current User Id from Session
+func (c *UserController) getCurrentUserID() int64 {
+	userID := c.Session.GetInt64Default(userIDKey, 0)
+	return userID
 }
 
 // GetProfile returns a "Hello {name}" response.
@@ -63,14 +42,17 @@ func (c *UserController) PostLogin() mvc.Result {
 // curl -i http://localhost:8080/user/profile/bee
 // curl -i http://localhost:8080/user/profile/anything
 func (c *UserController) GetProfile() mvc.Result {
-	var (
-		username = c.Ctx.FormValue("username")
-		password = c.Ctx.FormValue("password")
-	)
+	userId := c.getCurrentUserID()
+	if userId == 0 {
+		return mvc.Response{
+			Path: "/login",
+		}
+	}
 
 	var user = viewmodels.User{
-		Username: username,
-		Password: password,
+		Username:  "username",
+		Password:  "password",
+		Firstname: "Tùng",
 	}
 	return mvc.View{
 		// if not nil then this error will be shown instead.
