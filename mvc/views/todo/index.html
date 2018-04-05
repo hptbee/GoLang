@@ -21,6 +21,8 @@
     </table>
 
     <hr/>
+    <form action="/todo/Insert" method="post">
+    
     <div class="row">
         <div class="col-xs-3">
             <label>
@@ -37,7 +39,11 @@
             </label>
         </div>
         <div class="col-xs-9">
-            <input class="form-control" name="completed" type="checkbox"/>
+            <input name="completed" type="checkbox"/>
+        </div>
+        <div class="col-xs-12">
+            <input type="submit" value="Submit" class="btn"/>
         </div>
     </div>
+</form>
   </div>

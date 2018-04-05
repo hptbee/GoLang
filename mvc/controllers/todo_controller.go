@@ -101,7 +101,10 @@ func (c *TodoController) Get() mvc.Result {
 	}
 	return mvc.View{
 		Name: "todo/index.html",
-		Data: result,
+		Data: iris.Map{
+			"Title": "Todo List",
+			"Data":  result,
+		},
 	}
 }
 
@@ -120,7 +123,7 @@ func (c *TodoController) GetBy(id bson.ObjectId) (todo viewmodels.Todo, found bo
 // PutBy updates a todo.
 // Demo:
 // curl -i -X PUT -F "genre=Thriller" -F "poster=@/Users/kataras/Downloads/out.gif" http://localhost:8080/todos/1
-func (c *TodoController) Insert() mvc.Result {
+func (c *TodoController) Post() mvc.Result {
 	var (
 		name      = c.Ctx.FormValue("name")
 		completed = c.Ctx.FormValue("completed")

@@ -61,7 +61,7 @@ func main() {
 	mvc.Configure(app.Party("/user"), user)
 	// You can also split the code you write to configure an mvc.Application
 	// using the `mvc.Configure` method, as shown below.
-	mvc.Configure(app.Party("/todos"), todos)
+	mvc.Configure(app.Party("/todo"), todos)
 
 	app.Get("/", func(ctx iris.Context) { ctx.Redirect("/login") })
 
