@@ -30,8 +30,6 @@ type LoginController struct {
 	Session *sessions.Session
 }
 
-const sessionIDKey = "UserID"
-
 var loginStaticView = mvc.View{
 	Name: "login/login.html",
 	Data: iris.Map{"Title": "User Login"},
@@ -52,15 +50,19 @@ func (c *LoginController) Post() mvc.Result {
 	if username == "hptbee" && password == "10031993" {
 		var (
 			cookieNameForSessionID = "hptcookie"
-			sess                   = sessions.New(sessions.Config{
-				Cookie:  cookieNameForSessionID,
-				Expires: 45 * time.Minute,
-			})
+			sess                   = sessions.New(
+				sessions.Config{
+					Cookie:  cookieNameForSessionID,
+					Expires: time.Hour * 2,
+				})
 		)
+		fmt.Println(c.Session)
+		// session2 := c.Session.Increment(sessionIDKey, 23)
+		// fmt.Println(session2)
 		session := sess.Start(c.Ctx)
 		fmt.Println(session)
 
-		session.Set(sessionIDKey, 23)
+		session.Set("userid", 23)
 		fmt.Println(session)
 		return mvc.Response{
 			Path: "/user/profile",

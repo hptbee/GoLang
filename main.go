@@ -3,15 +3,39 @@
 package main
 
 import (
-	"example.mvc/authen"
-	"example.mvc/context"
-	"example.mvc/mvc/controllers"
-	"example.mvc/repo"
-	"example.mvc/services"
+	"time"
 
+	"example.mvc/mvc/controllers"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
+	"github.com/kataras/iris/sessions"
 )
+
+const cookieNameForSessionID = "hptcookie"
+
+var sess = sessions.New(sessions.Config{
+	Cookie:  cookieNameForSessionID,
+	Expires: time.Hour * 2,
+})
+
+//Check authen of session
+func CheckAuthen(ctx iris.Context) {
+
+	var sesss = sess.Start(ctx)
+	var userID = sesss.GetIntDefault("userid", 0)
+
+	// Check if user is authenticated
+	if userID == 0 {
+		ctx.Redirect("/login")
+	}
+
+	// Print secret message
+}
+
+// Start Session
+func StartSession(ctx iris.Context) {
+	sess.Start(ctx)
+}
 
 func main() {
 	app := iris.New()
@@ -30,15 +54,14 @@ func main() {
 			GetStringDefault("message", "The page you're looking for doesn't exist"))
 		ctx.View("shared/error.html")
 	})
-	// Serve our controllers.
 
 	mvc.Configure(app.Party("/hello"), hello)
-	mvc.Configure(app.Party("/login"), login)
+	mvc.Configure(app.Party("/login"), login).Register(sess.Start)
 
 	mvc.Configure(app.Party("/user"), user)
 	// You can also split the code you write to configure an mvc.Application
 	// using the `mvc.Configure` method, as shown below.
-	mvc.Configure(app.Party("/movies"), movies)
+	mvc.Configure(app.Party("/todos"), todos)
 
 	app.Get("/", func(ctx iris.Context) { ctx.Redirect("/login") })
 
@@ -59,23 +82,19 @@ func login(app *mvc.Application) {
 	app.Handle(new(controllers.LoginController))
 }
 func hello(app *mvc.Application) {
-	app.Router.Use(authen.BasicAuth)
+	app.Router.Use(CheckAuthen)
 	app.Handle(new(controllers.HelloController))
 }
 
 func user(app *mvc.Application) {
-	app.Router.Use(authen.BasicAuth)
+	app.Router.Use(CheckAuthen)
 	app.Handle(new(controllers.UserController))
 }
 
 // note the mvc.Application, it's not iris.Application.
-func movies(app *mvc.Application) {
-	app.Router.Use(authen.BasicAuth)
+func todos(app *mvc.Application) {
+	//app.Router.Use(CheckAuthen)
 
-	// Create our movie repository with some (memory) data from the datasource.
-	repo := repositories.NewMovieRepository(datasource.Movies)
-	// Create our movie service, we will bind it to the movie app's dependencies.
-	movieService := services.NewMovieService(repo)
-	app.Register(movieService)
-	app.Handle(new(controllers.MovieController))
+	// Create our todo service, we will bind it to the todo app's dependencies.
+	app.Handle(new(controllers.TodoController))
 }

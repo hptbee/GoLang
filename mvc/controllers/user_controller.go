@@ -62,11 +62,6 @@ func (c *UserController) GetProfile() mvc.Result {
 		},
 		// redirect to /user/me.
 		Name: "user/profile.html",
-		// When redirecting from POST to GET request you -should- use this HTTP status code,
-		// however there're some (complicated) alternatives if you
-		// search online or even the HTTP RFC.
-		// Status "See Other" RFC 7231, however iris can automatically fix that
-		// but it's good to know you can set a custom code;
-		// Code: 303,
+		
 	}
 }
