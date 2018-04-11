@@ -3,38 +3,27 @@
 package main
 
 import (
-	"time"
+	"fmt"
 
+	"example.mvc/authen"
 	"example.mvc/mvc/controllers"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
-	"github.com/kataras/iris/sessions"
 )
 
-const cookieNameForSessionID = "hptcookie"
-
-var sess = sessions.New(sessions.Config{
-	Cookie:  cookieNameForSessionID,
-	Expires: time.Hour * 2,
-})
-
 //Check authen of session
-func CheckAuthen(ctx iris.Context) {
+func CheckAuthen(ctx *authen.Context) {
 
-	var sesss = sess.Start(ctx)
-	var userID = sesss.GetIntDefault("userid", 0)
-
+	var sesss = ctx.Session()
+	var userID = sesss.GetStringDefault("userid", "")
+	fmt.Println(userID)
+	fmt.Println(sesss)
 	// Check if user is authenticated
-	if userID == 0 {
-		ctx.Redirect("/login")
+	if userID != "" {
+		ctx.Next()
 	}
 
-	// Print secret message
-}
-
-// Start Session
-func StartSession(ctx iris.Context) {
-	sess.Start(ctx)
+	ctx.Redirect("/login")
 }
 
 func main() {
@@ -55,16 +44,14 @@ func main() {
 		ctx.View("shared/error.html")
 	})
 
-	mvc.Configure(app.Party("/hello"), hello)
-	mvc.Configure(app.Party("/login"), login).Register(sess.Start)
-
+	mvc.Configure(app.Party("/login"), login)
 	mvc.Configure(app.Party("/user"), user)
 	// You can also split the code you write to configure an mvc.Application
 	// using the `mvc.Configure` method, as shown below.
 	todo := app.Party("/todo")
 	mvc.Configure(todo, todos)
 
-	app.Get("/", func(ctx iris.Context) { ctx.Redirect("/login") })
+	app.Get("/", func(ctx iris.Context) { ctx.Redirect("/todo") })
 
 	app.Run(
 		// Start the web server at localhost:8080
@@ -79,23 +66,15 @@ func main() {
 }
 
 func login(app *mvc.Application) {
-
 	app.Handle(new(controllers.LoginController))
-}
-func hello(app *mvc.Application) {
-	app.Router.Use(CheckAuthen)
-	app.Handle(new(controllers.HelloController))
 }
 
 func user(app *mvc.Application) {
-	app.Router.Use(CheckAuthen)
+	app.Router.Use(authen.Handler(CheckAuthen))
 	app.Handle(new(controllers.UserController))
 }
 
-// note the mvc.Application, it's not iris.Application.
 func todos(app *mvc.Application) {
-	//app.Router.Use(CheckAuthen)
-
-	// Create our todo service, we will bind it to the todo app's dependencies.
+	app.Router.Use(authen.Handler(CheckAuthen))
 	app.Handle(new(controllers.TodoController))
 }

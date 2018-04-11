@@ -5,99 +5,17 @@ package controllers
 import (
 	"fmt"
 	"log"
-	"strings"
-	"time"
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
-	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 
+	context "example.mvc/repo"
 	"example.mvc/viewmodels"
 )
 
-var todoDB *mgo.Database
-
-const (
-	hosts      = "ds153948.mlab.com:53948"
-	database   = "todos_db"
-	username   = "trungtp"
-	password   = "trungtp123"
-	collection = "todos"
-)
-
-// TodoController is our /todos controller.
 type TodoController struct {
 	Ctx iris.Context
-}
-
-type Query func(viewmodels.Todo) bool
-
-// Conect To Mongo DB
-func Connect() {
-	infos := &mgo.DialInfo{
-		Addrs:    []string{hosts},
-		Timeout:  60 * time.Second,
-		Database: database,
-		Username: username,
-		Password: password,
-	}
-	session, err := mgo.DialWithInfo(infos)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	todoDB = session.DB(database)
-}
-
-// Find list of todos
-func FindAll() (viewmodels.TodoList, error) {
-	Connect()
-	var todos viewmodels.TodoList
-	err := todoDB.C(collection).Find(bson.M{}).All(&todos)
-	return todos, err
-}
-
-// Find a todo by its id
-func FindByID(id string) (viewmodels.Todo, error) {
-	Connect()
-	var todo viewmodels.Todo
-	err := todoDB.C(collection).FindId(bson.ObjectIdHex(id)).One(&todo)
-	return todo, err
-}
-
-// Find a todo by its id
-func SearchByName(name string) (viewmodels.TodoList, error) {
-	Connect()
-	var todos viewmodels.TodoList
-	s := strings.Split(name, "")
-	err := todoDB.C(collection).Find(bson.M{"name": bson.M{"$in": s}}).All(&todos)
-	return todos, err
-}
-
-// Insert a todo into database
-func Insert(todo viewmodels.Todo) error {
-	Connect()
-	fmt.Printf("------Insert--------- \n")
-	err := todoDB.C(collection).Insert(&todo)
-	return err
-}
-
-// Delete By ID an existing todo
-func DeleteByID(id bson.ObjectId) error {
-	Connect()
-	err := todoDB.C(collection).RemoveId(id)
-	fmt.Println("delete")
-	return err
-}
-
-// Update an existing todo
-func Update(todo viewmodels.Todo) error {
-	Connect()
-	fmt.Printf("------Update--------- \n")
-
-	err := todoDB.C(collection).UpdateId(todo.Id, &todo)
-	return err
 }
 
 // otherwise just return the viewmodels.
@@ -109,7 +27,7 @@ var indexStaticView = mvc.View{
 //Index of Todo
 // GET: /todo
 func (c *TodoController) Get() mvc.Result {
-	result, err := FindAll()
+	result, err := context.FindAll()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -127,7 +45,7 @@ func (c *TodoController) Get() mvc.Result {
 // curl -i http://localhost:8080/todo/1
 func (c *TodoController) GetBy(id bson.ObjectId) (todo viewmodels.Todo, found bool) {
 	idString := id.String()
-	result, err := FindByID(idString)
+	result, err := context.FindByID(idString)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -156,7 +74,7 @@ func (c *TodoController) PostInsert() mvc.Result {
 		Name:      name,
 		Completed: bcompleted,
 	}
-	err2 := Insert(model)
+	err2 := context.Insert(model)
 	if err2 != nil {
 		log.Fatal(err2)
 	}
@@ -190,7 +108,7 @@ func (c *TodoController) PostUpdate() mvc.Result {
 		Name:      name,
 		Completed: bcompleted,
 	}
-	err2 := Update(model)
+	err2 := context.Update(model)
 	if err2 != nil {
 		log.Fatal(err2)
 	}
@@ -206,7 +124,7 @@ func (c *TodoController) GetRemoveBy(id string) mvc.Result {
 	fmt.Println(id)
 	var idA = bson.ObjectIdHex(id)
 	fmt.Println("convert Id")
-	wasDel := DeleteByID(idA)
+	wasDel := context.DeleteByID(idA)
 
 	if wasDel != nil {
 		// return the deleted todo's ID
@@ -221,7 +139,7 @@ func (c *TodoController) GetRemoveBy(id string) mvc.Result {
 func (c *TodoController) PostSearch() mvc.Result {
 	keyword := c.Ctx.PostValue("keyword")
 
-	result, err := SearchByName(keyword)
+	result, err := context.SearchByName(keyword)
 	if err != nil {
 		log.Fatal(err)
 	}

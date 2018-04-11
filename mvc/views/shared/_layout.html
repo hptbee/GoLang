@@ -4,13 +4,100 @@
     <title>{{.Title}}</title>
     <link rel="stylesheet" type="text/css" href="/content/styles/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/content/styles/custom.css" />
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
 </head>
 
-<body>
-    {{ yield }}
-    
+<body class="nav-md">
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+                    <div class="navbar nav_title" style="border: 0;">
+                        <a href="/" class="site_title">
+                            <i class="fa fa-paw"></i>
+                            <span>Go Lang</span>
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <ul class="nav side-menu">
+                                <li class="current-page">
+                                    <a href="/todo">
+                                        <i class="fa fa-pencil-square fa-fw"></i> To do List
+                                    </a>
+                                </li>
+                                <li class="current-page">
+                                    <a href="/user/profile">
+                                        <i class="fa fa-users fa-fw"></i> User
+                                    </a>
+
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /sidebar menu -->
+                    <!-- /menu footer buttons -->
+                    <!-- /menu footer buttons -->
+                </div>
+            </div>
+            <!-- top navigation -->
+            <div class="top_nav">
+                <div class="nav_menu">
+                    <nav class="" role="navigation">
+                        <div class="nav toggle">
+                            <a id="menu_toggle">
+                                <i class="fa fa-bars"></i>
+                            </a>
+                        </div>
+                        <ul class="nav navbar-nav navbar-right">
+
+                            <li class="dropdown">
+                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown">
+                                    BeeAdmin
+                                    <span class=" fa fa-angle-down"></span>
+                                </a>
+                                <ul class="dropdown-menu animated fadeInDown">
+                                    <li>
+                                        <a href="/user/profile">
+                                            <i class="fa fa-gear fa-fw"></i> Profile</a>
+                                    </li>
+                                    <li>
+                                        <a href="/user/logout">
+                                            <i class="fa fa-sign-out fa-fw"></i> Logout
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <!-- /top navigation -->
+            <!-- page content -->
+            <div class="right_col" role="main">
+                <!-- top tiles -->
+                {{ yield }}
+
+                <!-- footer content -->
+                <footer>
+                    <div class="pull-right">
+                        Developer by
+                        <a href="https://www.facebook.com/bee.huynh1003" style="font-weight: bold">Phương Tùng</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </footer>
+                <!-- /footer content -->
+            </div>
+            <!-- /page content -->
+        </div>
+    </div>
 </body>
-    <script src="/content/js/jquery-3.3.1.min.js"></script>
-    <script src="/content/js/bootstrap.min.js"></script>
+<script src="/content/js/jquery-3.3.1.min.js"></script>
+<script src="/content/js/bootstrap.min.js"></script>
 
 </html>

@@ -2,12 +2,13 @@
 package controllers
 
 import (
-	"fmt"
-	"time"
-
+	"example.mvc/authen"
+	context "example.mvc/repo"
+	"example.mvc/viewmodels"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
 	"github.com/kataras/iris/sessions"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // LoginController is our /login controller.
@@ -30,14 +31,12 @@ type LoginController struct {
 	Session *sessions.Session
 }
 
-var loginStaticView = mvc.View{
-	Name: "login/login.html",
-	Data: iris.Map{"Title": "User Login"},
-}
-
 // GetLogin handles GET: http://localhost:8080/login.
 func (c *LoginController) Get() mvc.Result {
-	return loginStaticView
+	return mvc.View{
+		Name: "login/login.html",
+		Data: iris.Map{"Title": "User Login"},
+	}
 }
 
 // PostLogin handles POST: http://localhost:8080/login.
@@ -47,23 +46,9 @@ func (c *LoginController) Post() mvc.Result {
 		password = c.Ctx.FormValue("Password")
 	)
 
-	if username == "hptbee" && password == "10031993" {
-		var (
-			cookieNameForSessionID = "hptcookie"
-			sess                   = sessions.New(
-				sessions.Config{
-					Cookie:  cookieNameForSessionID,
-					Expires: time.Hour * 2,
-				})
-		)
-		fmt.Println(c.Session)
-		// session2 := c.Session.Increment(sessionIDKey, 23)
-		// fmt.Println(session2)
-		session := sess.Start(c.Ctx)
-		fmt.Println(session)
+	if context.CheckUsernamePassword(username, password) {
+		authen.CreateSession("userid", "23", c.Ctx)
 
-		session.Set("userid", 23)
-		fmt.Println(session)
 		return mvc.Response{
 			Path: "/user/profile",
 		}
@@ -71,5 +56,32 @@ func (c *LoginController) Post() mvc.Result {
 
 	return mvc.Response{
 		Path: "/login",
+	}
+}
+
+func (c *LoginController) GetRegister() mvc.Result {
+	return mvc.View{
+		Name: "login/register.html",
+		Data: iris.Map{"Title": "User Login"},
+	}
+}
+
+func (c *LoginController) PostRegister() mvc.Result {
+	var user = viewmodels.User{
+		Id:       bson.NewObjectId(),
+		Username: c.Ctx.FormValue("UserName"),
+		Password: c.Ctx.FormValue("Password"),
+		Name:     c.Ctx.FormValue("Name"),
+		Email:    c.Ctx.FormValue("Email"),
+	}
+	if context.RegisterUser(user) {
+		authen.CreateSession("userid", "user.Id.Hex()", c.Ctx)
+		return mvc.Response{
+			Path: "/user/profile",
+		}
+	}
+	return mvc.View{
+		Name: "login/register.html",
+		Data: iris.Map{"Title": "User Login"},
 	}
 }

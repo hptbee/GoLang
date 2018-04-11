@@ -1,0 +1,45 @@
+<style>
+    .container-body {
+        background-image: url(/content/images/login_background.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+    }
+</style>
+<div class="container-body">
+    <div id="wrapper">
+        <div id="login" class="animate form">
+            <div id="output"></div>
+            <input type="hidden" id="result" />
+
+
+
+
+            <section class="login_content">
+                <form action="/login/register" method="post">
+                    <h1>Register Form</h1>
+                    <div>
+                        <input class="form-control" id="Name" name="Name" placeholder="Name" type="text" value="" />
+                    </div>
+                    <div>
+                        <input class="form-control" id="Email" name="Email" placeholder="Email" type="text" value="" />
+                    </div>
+                    <div>
+                        <input class="form-control" id="UserName" name="UserName" placeholder="UserName" type="text" value="" />
+                    </div>
+                    <div>
+                        <input class="form-control" id="Password" name="Password" placeholder="Password" type="password" />
+                    </div>
+                    <div>
+                        <button class="btn btn-info btn-block login" type="submit">Register</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>

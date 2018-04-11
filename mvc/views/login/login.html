@@ -1,65 +1,52 @@
+<style>
+    .container-body {
+        background-image: url(/content/images/login_background.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+    }
+</style>
+<div class="container-body">
+    <div id="wrapper">
+        <div id="login" class="animate form">
+            <div id="output"></div>
+            <input type="hidden" id="result" />
 
-<html>
 
-        <head>
-            <title>User Login</title>
-            <link rel="stylesheet" type="text/css" href="/content/styles/bootstrap.css" />
-            <link rel="stylesheet" type="text/css" href="/content/styles/custom.css" />
-        </head>
-        
-        <body>
-            <style>
-            body {
-            background-image: url(/content/images/login_background.jpg);
-            background-repeat:no-repeat;
-            background-size:cover;
-        }
-        </style>
-        
-            <div id="wrapper">
-                <div id="login" class="animate form">
-                    <div id="output"></div>
-                    <input type="hidden" id="result" />
-                    
-                    
-        
-        
-        <section class="login_content">
-        <form action="/login" method="post">
-            <h1>Login Form</h1>
-                <div>
-                    
-                    <input class="form-control" id="UserName" name="UserName" placeholder="Tên đăng nhập" type="text" value="" />
-                </div>
-                <div>
-                    
-                    <input class="form-control" id="Password" name="Password" placeholder="Mật khẩu" type="password" />
-        
-        
-                </div>
-                <div>
-                    <button class="btn btn-info btn-block login" type="submit">Login</button>
-                </div>
+
+
+            <section class="login_content">
+                <form action="/login" method="post">
+                    <h1>Login Form</h1>
+                    <div>
+
+                        <input class="form-control" id="UserName" name="UserName" placeholder="Tên đăng nhập" type="text" value="" />
+                    </div>
+                    <div>
+
+                        <input class="form-control" id="Password" name="Password" placeholder="Mật khẩu" type="password" />
+
+
+                    </div>
+                    <div>
+                        <button class="btn btn-info btn-block login" type="submit">Login</button>
+                    </div>
                     <div class="clearfix"></div>
                     <div class="separator">
                         <br/>
-                            <a> 
-                                Đăng kí
-                            </a>
+                        <a href="/login/register"> 
+                            Đăng kí
+                        </a>
                     </div>
-                    <h3></h3>
-                    <h3></h3>
-        </form>    
-        </section>
-        
-        
-                      
-                    </div>
-                </div>
-        
-            
-        </body>
-            <script src="/content/js/jquery-3.3.1.min.js"></script>
-            <script src="/content/js/bootstrap.min.js"></script>
-        
-        </html>
+                </form>
+            </section>
+
+
+
+        </div>
+    </div>
+</div>

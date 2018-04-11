@@ -1,9 +1,8 @@
 package viewmodels
 
 import (
-	"time"
-
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // User is our User example model.
@@ -14,17 +13,11 @@ import (
 // of the example, we will use this datamodel
 // as the only one User model in our application.
 type User struct {
-	ID             int64  `json:"id" form:"id"`
-	Firstname      string `json:"firstname" form:"firstname"`
-	Username       string `json:"username" form:"username"`
-	HashedPassword []byte `json:"-" form:"-"`
-	Password       string
-	CreatedAt      time.Time `json:"created_at" form:"created_at"`
-}
-
-// IsValid can do some very very simple "low-level" data validations.
-func (u User) IsValid() bool {
-	return u.ID > 0
+	Id       bson.ObjectId `bson:"_id" json:"id"`
+	Name     string        `json:"name" form:"name"`
+	Username string        `json:"username" form:"username"`
+	Email    string        `json:"email" form:"email"`
+	Password string        `json:"password" form:"password"`
 }
 
 // GeneratePassword will generate a hashed password for us based on the
