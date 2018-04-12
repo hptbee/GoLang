@@ -2,6 +2,7 @@ package repo
 
 import (
 	"fmt"
+	"log"
 
 	"example.mvc/context"
 	"example.mvc/viewmodels"
@@ -19,6 +20,7 @@ func CheckUsernamePassword(user string, password string) bool {
 	var todo viewmodels.Todo
 	err := todoDB.C(collection).Find(bson.M{"userName": user, "password": password}).One(&todo)
 	if err != nil {
+		log.Fatal(err)
 		return false
 	}
 	return true

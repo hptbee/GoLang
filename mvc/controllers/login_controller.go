@@ -47,7 +47,7 @@ func (c *LoginController) Post() mvc.Result {
 	)
 
 	if context.CheckUsernamePassword(username, password) {
-		authen.CreateSession("userid", "23", c.Ctx)
+		authen.CreateSession("userid", username, c.Ctx)
 
 		return mvc.Response{
 			Path: "/user/profile",
@@ -75,7 +75,7 @@ func (c *LoginController) PostRegister() mvc.Result {
 		Email:    c.Ctx.FormValue("Email"),
 	}
 	if context.RegisterUser(user) {
-		authen.CreateSession("userid", "user.Id.Hex()", c.Ctx)
+		authen.CreateSession("userid", user.Username, c.Ctx)
 		return mvc.Response{
 			Path: "/user/profile",
 		}

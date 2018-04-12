@@ -15,7 +15,7 @@ import (
 type User struct {
 	Id       bson.ObjectId `bson:"_id" json:"id"`
 	Name     string        `json:"name" form:"name"`
-	Username string        `json:"username" form:"username"`
+	Username string        `json:"username" form:"userName"`
 	Email    string        `json:"email" form:"email"`
 	Password string        `json:"password" form:"password"`
 }
