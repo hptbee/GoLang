@@ -10,7 +10,7 @@ import (
 	"github.com/kataras/iris/mvc"
 	"gopkg.in/mgo.v2/bson"
 
-	context "example.mvc/repo"
+	"example.mvc/repo"
 	"example.mvc/viewmodels"
 )
 
@@ -27,7 +27,7 @@ var indexStaticView = mvc.View{
 //Index of Todo
 // GET: /todo
 func (c *TodoController) Get() mvc.Result {
-	result, err := context.FindAll()
+	result, err := repo.FindAll()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,7 +45,7 @@ func (c *TodoController) Get() mvc.Result {
 // curl -i http://localhost:8080/todo/1
 func (c *TodoController) GetBy(id bson.ObjectId) (todo viewmodels.Todo, found bool) {
 	idString := id.String()
-	result, err := context.FindByID(idString)
+	result, err := repo.FindByID(idString)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,7 +74,7 @@ func (c *TodoController) PostInsert() mvc.Result {
 		Name:      name,
 		Completed: bcompleted,
 	}
-	err2 := context.Insert(model)
+	err2 := repo.Insert(model)
 	if err2 != nil {
 		log.Fatal(err2)
 	}
@@ -108,7 +108,7 @@ func (c *TodoController) PostUpdate() mvc.Result {
 		Name:      name,
 		Completed: bcompleted,
 	}
-	err2 := context.Update(model)
+	err2 := repo.Update(model)
 	if err2 != nil {
 		log.Fatal(err2)
 	}
@@ -117,14 +117,12 @@ func (c *TodoController) PostUpdate() mvc.Result {
 	}
 }
 
-// GetRemove deletes a todo.
+// GetRemoveBy deletes a todo.
 // Demo:
 // GET: /todo/remove/{id:string}
 func (c *TodoController) GetRemoveBy(id string) mvc.Result {
-	fmt.Println(id)
-	var idA = bson.ObjectIdHex(id)
-	fmt.Println("convert Id")
-	wasDel := context.DeleteByID(idA)
+	idA := bson.ObjectIdHex(id)
+	wasDel := repo.DeleteByID(idA)
 
 	if wasDel != nil {
 		// return the deleted todo's ID
@@ -139,7 +137,7 @@ func (c *TodoController) GetRemoveBy(id string) mvc.Result {
 func (c *TodoController) PostSearch() mvc.Result {
 	keyword := c.Ctx.PostValue("keyword")
 
-	result, err := context.SearchByName(keyword)
+	result, err := repo.SearchByName(keyword)
 	if err != nil {
 		log.Fatal(err)
 	}

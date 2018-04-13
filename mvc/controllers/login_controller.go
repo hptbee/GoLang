@@ -3,7 +3,7 @@ package controllers
 
 import (
 	"example.mvc/authen"
-	context "example.mvc/repo"
+	"example.mvc/repo"
 	"example.mvc/viewmodels"
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
@@ -46,7 +46,7 @@ func (c *LoginController) Post() mvc.Result {
 		password = c.Ctx.FormValue("Password")
 	)
 
-	if context.CheckUsernamePassword(username, password) {
+	if repo.CheckUsernamePassword(username, password) {
 		authen.CreateSession("userid", username, c.Ctx)
 
 		return mvc.Response{
@@ -74,7 +74,7 @@ func (c *LoginController) PostRegister() mvc.Result {
 		Name:     c.Ctx.FormValue("Name"),
 		Email:    c.Ctx.FormValue("Email"),
 	}
-	if context.RegisterUser(user) {
+	if repo.RegisterUser(user) {
 		authen.CreateSession("userid", user.Username, c.Ctx)
 		return mvc.Response{
 			Path: "/user/profile",
